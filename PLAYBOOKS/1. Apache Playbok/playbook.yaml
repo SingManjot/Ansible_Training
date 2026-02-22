@@ -1,0 +1,19 @@
+---
+- name: Play to install and configure HTTPD Server
+  hosts: all
+  become: true
+  gather_facts: true
+  
+  tasks:
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+      
+    - name: Copy file with owner and permissions
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
