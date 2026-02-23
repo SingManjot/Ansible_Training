@@ -1,0 +1,4 @@
+---
+apache_pkg: apache2
+apache_service: apache2
+apache_index_message: "Welcome to Apache from apache__role"
