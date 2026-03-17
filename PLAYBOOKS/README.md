@@ -1,6 +1,7 @@
 ## Baisc info on PLAYBOOKS
 * These are yaml files.
 * A playbook is esentially a collection of **PLAYS** and each play has multiple **TASKS** in it
+* To execute each playbook, you can either use the centralized inventory file or create an inventory file per project and use that in the command
 ```
 ---
 - name: PLAY1

@@ -1,0 +1,38 @@
+# We make an anisble vault to store the secrets that are then used in this playbook.
+# When creating the vault, we encrypt the vault with a passord, maybe base64 encoded or anythin else
+# When we then use the anisble-playbook command to run the playbook, we need to provide the vault password to decrypt the vault and use the secrets in the playbook.
+# ansible-playook -i inventory.ini playbook.yaml --vault-password-file vault_pass.txt
+
+---
+- name: Create EC2 Instance
+  # localhost is used because running the playbook from local machine to create EC2 instance and not on remote hosts
+  hosts: localhost 
+  gather_facts: false
+  vars:
+    aws_region: us-east-1
+    instance_type: t2.micro
+    ami_id: ami-0c55b159cbfafe1f0
+    key_name: my-key-pair
+    security_group: default
+
+  tasks:
+    - name: Launch EC2 instance
+      amazon.aws.ec2_instance:
+        name: my-ansible-instance
+        state: running
+        image_id: "{{ ami_id }}"
+        instance_type: "{{ instance_type }}"
+        key_name: "{{ key_name }}"
+        security_group: "{{ security_group }}"
+        region: "{{ aws_region }}"
+        aws_access_key: "{{ ec2_access_key }}" # As defined in the ansible-vault
+        aws_secret_key: "{{ ec2_secret_key }}" # As defined in the ansible- vault
+        wait: true
+        tags:
+          Name: ansible-created-instance
+          Environment: test
+      register: ec2_result
+
+    - name: Display instance details
+      debug:
+        msg: "Instance ID: {{ ec2_result.instances[0].instance_id }}, IP: {{ ec2_result.instances[0].public_ip_address }}"
