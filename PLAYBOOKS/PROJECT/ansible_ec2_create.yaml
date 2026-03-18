@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: True
+  tasks:
+    - name: Create EC2 instance
+      amazon.aws.ec2_instance:
+        name: "{{ item.name }}"
+        key_name: "aws-keypair"
+        instance_type: "t2.micro"
+        security_groups: "default"
+        region: ap-south-1
+        aws_access_key: "{{ aws_access_key }}" # As defined in the vault
+        aws_secret_key: "{{ aws_secret_key }}" # As defined in the vault
+        network:
+          assign_public_ip: true
+        image_id: "{{ item.image }}"
+        tags:
+          environment: "{{ item.name }}"
+        loop:
+          - { image: "ami-0b0af3577fe5e3532" , name: "manage-node-1"} # we give different name to the instance to avoid confusion and resolve ansible indempotency issue
+          - { image: "ami-0b0af3577fe5e3112" , name: "manage-node-1"}
+          - { image: "ami-0b0af3577fe5e3112" , name: "manage-node-1"}
