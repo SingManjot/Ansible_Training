@@ -1,6 +1,8 @@
 pipeline{
 agent{
-  docker{ image alpine:latest }
+  docker{ 
+    image 'alpine:latest'
+  }
 }
 stages{
   stage("Initial"){
